@@ -116,7 +116,7 @@ defmodule Stripe.Webhook do
   end
 
   defp compute_signature(payload, secret) do
-    :crypto.hmac(:sha256, secret, payload)
+    :crypto.mac(:hmac, :sha256, secret, payload)
     |> Base.encode16(case: :lower)
   end
 
@@ -135,7 +135,7 @@ defmodule Stripe.Webhook do
     import Bitwise
 
     acc
-    |> bor(input_codepoint ^^^ expected_codepoint)
+    |> bor(bxor(input_codepoint, expected_codepoint))
     |> secure_compare(input, expected)
   end
 
